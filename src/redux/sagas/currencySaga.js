@@ -3,7 +3,7 @@
 import { call, takeLatest, put } from 'redux-saga/effects';
 
 // imports internal
-import { getCurenciesAveragesByMonthService } from '../../services/dataService';
+import { getCurenciesAveragesByMonthDataService } from '../../services/dataService';
 import { errorLog } from '../../common/errorHelper';
 import { CURRENCY_ACTION_TYPE, TASK_STATUS } from '../../common/consts';
 
@@ -15,7 +15,7 @@ function* getCurrencyAverageForGivenMonth(action) {
             value: TASK_STATUS.PENDING
         })
 
-        const res = yield call(getCurenciesAveragesByMonthService, action.value);
+        const res = yield call(getCurenciesAveragesByMonthDataService, action.value);
 
         if(res) {
             yield put({

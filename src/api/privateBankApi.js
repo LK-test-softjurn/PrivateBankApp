@@ -1,6 +1,26 @@
-import { url } from '../common/config';
+// imports external
 
-export async function getCurenciesDataByDatePrivatBankApi(date) {
-    // TODO implement fetch
-    return {"date":"01.12.2020","bank":"PB","baseCurrency":980,"baseCurrencyLit":"UAH","exchangeRate":[{"baseCurrency":"UAH","saleRateNB":21.0188000,"purchaseRateNB":21.0188000},{"baseCurrency":"UAH","currency":"AZN","saleRateNB":16.7694000,"purchaseRateNB":16.7694000},{"baseCurrency":"UAH","currency":"BYN","saleRateNB":11.0109000,"purchaseRateNB":11.0109000},{"baseCurrency":"UAH","currency":"CAD","saleRateNB":21.9988000,"purchaseRateNB":21.9988000},{"baseCurrency":"UAH","currency":"CHF","saleRateNB":31.4893000,"purchaseRateNB":31.4893000,"saleRate":32.4500000,"purchaseRate":30.6500000},{"baseCurrency":"UAH","currency":"CNY","saleRateNB":4.3327000,"purchaseRateNB":4.3327000},{"baseCurrency":"UAH","currency":"CZK","saleRateNB":1.3027000,"purchaseRateNB":1.3027000,"saleRate":1.3100000,"purchaseRate":1.1100000},{"baseCurrency":"UAH","currency":"DKK","saleRateNB":4.5887000,"purchaseRateNB":4.5887000},{"baseCurrency":"UAH","currency":"EUR","saleRateNB":34.1456000,"purchaseRateNB":34.1456000,"saleRate":34.3700000,"purchaseRate":33.7500000},{"baseCurrency":"UAH","currency":"GBP","saleRateNB":38.0011000,"purchaseRateNB":38.0011000,"saleRate":38.6500000,"purchaseRate":36.6500000},{"baseCurrency":"UAH","currency":"HUF","saleRateNB":0.0949240,"purchaseRateNB":0.0949240},{"baseCurrency":"UAH","currency":"ILS","saleRateNB":8.6148000,"purchaseRateNB":8.6148000},{"baseCurrency":"UAH","currency":"JPY","saleRateNB":0.2735700,"purchaseRateNB":0.2735700},{"baseCurrency":"UAH","currency":"KZT","saleRateNB":0.0669840,"purchaseRateNB":0.0669840},{"baseCurrency":"UAH","currency":"MDL","saleRateNB":1.6531000,"purchaseRateNB":1.6531000},{"baseCurrency":"UAH","currency":"NOK","saleRateNB":3.2341000,"purchaseRateNB":3.2341000},{"baseCurrency":"UAH","currency":"PLZ","saleRateNB":7.6330000,"purchaseRateNB":7.6330000,"saleRate":7.7000000,"purchaseRate":7.2000000},{"baseCurrency":"UAH","currency":"RUB","saleRateNB":0.3745600,"purchaseRateNB":0.3745600,"saleRate":0.4000000,"purchaseRate":0.3600000},{"baseCurrency":"UAH","currency":"SEK","saleRateNB":3.3579000,"purchaseRateNB":3.3579000},{"baseCurrency":"UAH","currency":"SGD","saleRateNB":21.3024000,"purchaseRateNB":21.3024000},{"baseCurrency":"UAH","currency":"TMT","saleRateNB":8.1418000,"purchaseRateNB":8.1418000},{"baseCurrency":"UAH","currency":"TRY","saleRateNB":3.6594000,"purchaseRateNB":3.6594000},{"baseCurrency":"UAH","currency":"UAH","saleRateNB":1.0000000,"purchaseRateNB":1.0000000},{"baseCurrency":"UAH","currency":"USD","saleRateNB":28.4962000,"purchaseRateNB":28.4962000,"saleRate":28.7000000,"purchaseRate":28.3000000},{"baseCurrency":"UAH","currency":"UZS","saleRateNB":0.0027328,"purchaseRateNB":0.0027328},{"baseCurrency":"UAH","currency":"GEL","saleRateNB":8.5837000,"purchaseRateNB":8.5837000}]}
+// imports internal
+import { API_ERROR } from '../common/consts';
+import { url } from '../common/config';
+import { errorLog } from '../common/errorHelper';
+import { store } from '../redux/store';
+
+export async function fetchDatafromUrl (date) {
+    // console.log('STORE', store.getState());
+    try {
+        const res = await fetch(`${url}${date}`);
+        if(res!== undefined && res?.status === 200){
+            const parsed = await res.json();
+            if(parsed !== undefined && parsed !== null) {
+                return parsed;
+            } else {
+                return API_ERROR.API_ERROR_UNDEFINED;    
+            }
+        } else {
+            return API_ERROR.API_ERROR_UNDEFINED;
+        }
+    } catch(err) {
+        errorLog('apiService / fetchDatafromURL', error);
+    }
 }
