@@ -2,11 +2,16 @@
 
 // imports internal
 import { getCurencyDataByMonthApiService } from '../services/apiService';
-import { currencyTable } from '../common/config';
-
-const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+import { monthDays } from '../common/consts';
+import { getCurrencyMonthDataDbService } from '../services/dbService';
 
 export async function getCurenciesAveragesByMonthDataService(value) {
+
+    const averages = await getCurrencyMonthDataDbService(value.month + 1, value.year);
+
+    if(averages?.length > 0) {
+        return averages;
+    }
 
     const daysOfMonth = getMonthDays(value.month, value.year);
     
@@ -14,7 +19,6 @@ export async function getCurenciesAveragesByMonthDataService(value) {
     const currentYear = new Date(currentDate).getFullYear();
     const currentMonth = new Date(currentDate).getMonth();
     const currentDayOfTheMonth = new Date(currentDate).getDate();
-
 
     let maxDay = daysOfMonth;
     if(currentYear === value.year && currentMonth === value.month) {
@@ -31,14 +35,19 @@ export async function getCurenciesAveragesByMonthDataService(value) {
     }
 
     if(dates.length > 0) {
-        await getCurencyDataByMonthApiService(dates);
-    } else {
-        return []
+        const fetchingResult = await getCurencyDataByMonthApiService(dates);
+
+        if(fetchingResult === true) {
+            const averages = await getCurrencyMonthDataDbService(value.month + 1, value.year);
+
+            if(averages?.length > 0) {
+                return averages;
+            }
+        }
     }
 
-    return [{currency: 'USD', saleRateNBAverage: 28.4028000, purchaseRateNBAverage: 27.4028000},
-    {currency: 'EUR', saleRateNBAverage: 34.8460000, purchaseRateNBAverage: 27.4028000},
-    {currency: 'PLZ', saleRateNBAverage: 34.8460000, purchaseRateNBAverage: 27.4028000}]
+    return [];
+
 }
 
 

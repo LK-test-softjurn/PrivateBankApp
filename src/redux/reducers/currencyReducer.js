@@ -8,10 +8,11 @@ const initialState = {
     averageValues: [],
     taskStatus: TASK_STATUS.NONE
 }
-
+// averages [{"averagePurchaseRate": 28.10909063165838, "averageSaleRate": 28.53636308149858, "currency": "USD"}, {"averagePurchaseRate": 34.36818244240501, "averageSaleRate": 35.04363597523082, "currency": "EUR"}, {"averagePurchaseRate": 7.2272726405750625, "averageSaleRate": 7.754545471884987, "currency": "PLZ"}]
 const currencyReducer = (state = initialState, action) => {
     switch(action.type) {
         case CURRENCY_ACTION_TYPE.READY_AVERAGE_FOR_GIVEN_MONTH: {
+            console.log('action?.value', action?.value);
             return {
                 ...state,
                 averageValues: [...action?.value]

@@ -33,3 +33,5 @@ export const MESSAGE_BOX_TYPE = {
     INFO: 'INFO',
     ERROR: 'ERROR'
 }
+
+export const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];

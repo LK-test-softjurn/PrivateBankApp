@@ -4,7 +4,7 @@
 import { API_ERROR } from '../common/consts';
 import { url } from '../common/config';
 import { errorLog } from '../common/errorHelper';
-import { store } from '../redux/store';
+
 
 export async function fetchDatafromUrl (date) {
     // console.log('STORE', store.getState());

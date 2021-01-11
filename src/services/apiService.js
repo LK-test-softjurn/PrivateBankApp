@@ -6,41 +6,39 @@ import { errorLog } from '../common/errorHelper';
 import { fetchDatafromUrl } from '../api/privateBankApi';
 import { currencyTable } from '../common/config';
 import { API_ERROR } from '../common/consts';
+import { storeDataDbService } from '../services/dbService';
 
 export async function getCurencyDataByMonthApiService(dates) {
     try {   
         const allDaysDataFetch = [];
 
-        let max = dates?.length;
-        for (let i = 0; i < max; i++) {
+        const maxIndex = dates?.length;
+        for (let i = 0; i < maxIndex; i++) {
             allDaysDataFetch.push(fetchDatafromUrl(dates[i]));
         }
 
-        const res = await Promise.all(allDaysDataFetch);
+        const res = await Promise.all(allDaysDataFetch); 
         
-        const allDaysDataArray = [];
         if(res !== undefined && res?.length > 0) {
-            const maxIndex = res.length;
-            for(let i = 0; i < maxIndex; i++) {
-                if(res[i] !== API_ERROR.API_ERROR_UNDEFINED) {
-                    allDaysDataArray.push(...res[i]?.exchangeRate?.filter(filterCurrency));
-                    console.log('TABLE', allDaysDataArray);
-                }
+            const savingResult  = await storeDataDbService(res);
+
+            if(savingResult === true) {
+                return true;
+            } else {
+                return false;
             }
+
+        } else {
+            return false;
         }
 
-        return res;
     } catch (err) {
         errorLog('apiService / getCurenciesDataByDate', err);
+        return false;
     }
 }
 
-function filterCurrency(item) {
-    let isfound = false;
-    currencyTable.forEach(element => {
-       if(element == item.currency) {
-           isfound =  true;
-       }
-   });
-   return isfound;
+async function storeDataInToDB(data) {
+    await storeDataDbService(data);
 }
+

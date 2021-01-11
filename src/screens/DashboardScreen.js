@@ -98,7 +98,6 @@ class DashboardScreen extends React.Component {
             <View style={styles.container}>
                 <LinearGradient style={styles.gradientBackground}
                     colors={colors.grayGradient}
-                    // colors={['#4c669f', '#3b5998', '#192f6a']}
                     start={{ x: 0.0, y: 0.3 }} end={{ x: 1.0, y: 1.0 }}
                 >
                     <SafeAreaView>
@@ -132,7 +131,7 @@ class DashboardScreen extends React.Component {
                         </View>
 
                         <Table headers={[STRINGS.CURRENCY, STRINGS.BUY, STRINGS.SELL]} 
-                            data={[...this.props?.currency?.averageValues]} 
+                            data={this.props?.currency?.averageValues} 
                             onHeadersSelected={[this.onCurrency, this.onBuy, this.onSell]} 
                             onRowSelected={this.onRow}
                             sortable={false}/>
