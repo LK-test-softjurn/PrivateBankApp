@@ -35,6 +35,7 @@ export const STRINGS = {
 
     OK: 'Ok',
     CANCEL: 'Cancel',
+    BACK: 'Back',
 
     DASHBOARD_TITLE: 'PrivatBank Rates',
     DASHBOARD_TABLE_BOTTOM_LABEL: 'average rates for given month',
@@ -42,5 +43,7 @@ export const STRINGS = {
     CURRENCY: 'Currency',
     BUY: 'Buy',
     SELL: 'Sell',
-    DATE: 'Date'
+    DATE: 'Date',
+
+    NO_DATA_AVAILABLE: 'No data available so far...'
 }

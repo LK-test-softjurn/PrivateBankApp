@@ -4,6 +4,8 @@ export const CURRENCY_DETAILS_ACTION_TYPE  = {
     CLEAR_DATA: 'CLEAR_DATA',
     CLEAR_ERROR: 'CLEAR_ERROR',
     TASK_STATUS: 'TASK_STATUS',
+    SET_CHOSEN_MONTH: 'SET_CHOSEN_MONTH',
+    SET_CHOSEN_YEAR: 'SET_CHOSEN_YEAR', 
 }
 
 export const CURRENCY_ACTION_TYPE  = {
@@ -32,6 +34,12 @@ export const API_ERROR = {
 export const MESSAGE_BOX_TYPE = {
     INFO: 'INFO',
     ERROR: 'ERROR'
+}
+
+export const SORT_FIELD_TYPE ={
+    DATE: 'DATE',
+    BUY: 'BUY',
+    SELL: 'SELL'
 }
 
 export const monthDays = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];

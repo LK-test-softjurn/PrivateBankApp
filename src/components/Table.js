@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 // imports internal
 import { theme } from '../../styles/theme';
 import { colors } from '../../styles/colors';
+import { STRINGS } from '../common/constsStrings';
 
 export const Table = ({ headers, data, onHeadersSelected, onRowSelected, sortable }) => {
     const PRESET_COLUMNS = 3;
@@ -14,7 +15,7 @@ export const Table = ({ headers, data, onHeadersSelected, onRowSelected, sortabl
     const [columns, setColumns] = useState(PRESET_COLUMNS)
     const [dataToShow, setDataToShow] = useState([]);
     const [currentColumnSelected, setCurrentColumnSelected] = useState(NONE);
-    const [sortDesc, setSortDesc] = useState(true);
+    const [sortDesc, setSortDesc] = useState([]);
 
     useEffect(() => {
 
@@ -42,11 +43,16 @@ export const Table = ({ headers, data, onHeadersSelected, onRowSelected, sortabl
             setDataToShow([...tempTable]);
         }
 
-    }, []);
+    }, [data]);
 
     const onSelectedColumn = (column) => {
+        const array = [...sortDesc];
+        array[column] = !array[column];
+
+        console.log('column', array)
         setCurrentColumnSelected(column);
-        setSortDesc(!sortDesc);
+
+        setSortDesc([...array]);
     }
 
     const renderItem = ({ item, index }) => {
@@ -60,21 +66,29 @@ export const Table = ({ headers, data, onHeadersSelected, onRowSelected, sortabl
                 </View>)
             } else {
                 return (<View style={[styles.headerItemStyle, { flex: index === 0 ? 2 : 1 }]}>
-                    <TouchableOpacity onPress={() => {onHeadersSelected[index](); onSelectedColumn(index)}} >
+                    <TouchableOpacity onPress={() => {headersCallBacks > index ? onHeadersSelected[index](sortDesc[index]) : null; onSelectedColumn(index)}} >
                         <View style={{flexDirection: 'row'}}>
                             <Text style={theme.whiteBoldText}>{item.value}</Text>
-                            {curentColumn === currentColumnSelected ? (<Icon name={sortDesc === true ? "arrow-drop-down" : "arrow-drop-up"} size={24} color={'#e6e6e6'} />) : null }
+                            {curentColumn === currentColumnSelected ? (<Icon name={sortDesc[index] === false ? "arrow-drop-down" : "arrow-drop-up"} size={24} color={'#e6e6e6'} />) : null }
                         </View>
                     </TouchableOpacity>
                 </View >)
             }
-        } else {        
+        } else {   
+  
             return (<View style={[styles.dataItemStyle, { borderRightWidth: curentColumn < columns ? 0 : 1, flex: curentColumn === 0 ? 2 : 1 }]}>
-                <TouchableOpacity onPress={() => onRowSelected(Math.floor(index / columns))}>
+                <TouchableOpacity onPress={() => {onRowSelected ? onRowSelected((Math.floor(index / columns) - 1)) : null}}>
                     <Text style={theme.whiteBoldText}>{item.value}</Text>
                 </TouchableOpacity>
             </View>)
         }
+    }
+
+
+    const renderEmptyList = () => {
+        return (
+            <View style={styles.emptyDataListContainer}><Text style={theme.whiteBoldText}>{STRINGS.NO_DATA_AVAILABLE}</Text></View>
+        )
     }
 
     return (<View style={styles.container}>
@@ -85,6 +99,7 @@ export const Table = ({ headers, data, onHeadersSelected, onRowSelected, sortabl
             numColumns={columns}
             horizontal={false}
             keyExtractor={item => item.id}
+            ListEmptyComponent={renderEmptyList}
         />
     </View>)
 
@@ -112,5 +127,8 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderTopWidth: 0,
         borderColor: colors.blueColor
+    },
+    emptyDataListContainer: {
+        margin: 20
     }
 })

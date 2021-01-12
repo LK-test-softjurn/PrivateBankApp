@@ -12,29 +12,26 @@ export async function getCurencyDataByMonthApiService(dates) {
     try {   
         const allDaysDataFetch = [];
 
-        const maxIndex = dates?.length;
+        const maxIndex = 2;//dates?.length;
         for (let i = 0; i < maxIndex; i++) {
             allDaysDataFetch.push(fetchDatafromUrl(dates[i]));
         }
 
         const res = await Promise.all(allDaysDataFetch); 
-        
-        if(res !== undefined && res?.length > 0) {
+
+        if(res?.length > 0) {
             const savingResult  = await storeDataDbService(res);
 
             if(savingResult === true) {
                 return true;
-            } else {
-                return false;
-            }
-
-        } else {
-            return false;
+            } 
         }
+        return false;
+        
 
     } catch (err) {
         errorLog('apiService / getCurenciesDataByDate', err);
-        return false;
+        throw API_ERROR.API_ERROR_UNDEFINED;
     }
 }
 

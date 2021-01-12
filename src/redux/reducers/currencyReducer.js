@@ -12,7 +12,6 @@ const initialState = {
 const currencyReducer = (state = initialState, action) => {
     switch(action.type) {
         case CURRENCY_ACTION_TYPE.READY_AVERAGE_FOR_GIVEN_MONTH: {
-            console.log('action?.value', action?.value);
             return {
                 ...state,
                 averageValues: [...action?.value]

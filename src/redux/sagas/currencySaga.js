@@ -36,6 +36,10 @@ function* getCurrencyAverageForGivenMonth(action) {
     }
     catch (err) {
         errorLog('currencySaga / getCurrencyAverage', err);
+        yield put({
+            type: CURRENCY_ACTION_TYPE.TASK_STATUS,
+            value: TASK_STATUS.ERROR
+        })  
     }
 }
 

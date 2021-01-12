@@ -2,7 +2,7 @@
 
 // imports internal
 import { errorLog } from '../common/errorHelper';
-import { API_ERROR } from '../common/consts';
+import { API_ERROR, monthDays } from '../common/consts';
 import { currencyTable } from '../common/config';
 import { storeDataRealmDb, 
     getCurrencyMonthDataRealmDb, 
@@ -10,7 +10,7 @@ import { storeDataRealmDb,
 
 export async function storeDataDbService(data) {
     try{
-        allStorageArray = [];
+        const allStorageArray = [];
         const maxIndex = data.length;
         
         for(let i = 0; i < maxIndex; i++) {
@@ -30,12 +30,13 @@ export async function storeDataDbService(data) {
     }
 }
 
-export async function getCurrencyMonthDataDbService(month, year) {
-    return await getCurrencyMonthDataRealmDb(month, year);
+export function getCurrencyMonthDataDbService(currency, month, year, sortByField, asc) {
+   // {"currency": "EUR", "date": "2021-01-11T00:00:00.000Z", "day": 11, "month": 1, "purchaseRate": 34.04999923706055, "purchaseRateNB": 34.909000396728516, "saleRate": 34.650001525878906, "saleRateNB": 34.909000396728516, "year": 2021}
+    return getCurrencyMonthDataRealmDb(currency, month, year, sortByField, asc);
 }
 
-export async function getCurrenciesAveragesMonthDataDbService(currencies, month) {
-    await getCurrenciesAveragesMonthDataRealmDb();
+export function getCurrenciesAveragesMonthDataDbService(month, year) {
+    return getCurrenciesAveragesMonthDataRealmDb(month, year);
 }
 
 function filterCurrency(item) {

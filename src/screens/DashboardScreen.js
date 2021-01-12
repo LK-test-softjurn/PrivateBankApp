@@ -3,14 +3,12 @@ import React from 'react';
 import {
     View,
     Text,
-    TouchableOpacity,
     ActivityIndicator,
     SafeAreaView,
     StyleSheet,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // imports internal
 import { Table } from '../components/Table';
@@ -20,28 +18,22 @@ import { colors } from '../../styles/colors';
 import { MonthPicker } from '../components/MonthPicker';
 import { YearPicker } from '../components/YearPicker';
 import { STRINGS } from '../common/constsStrings';
+import { PikerPanel } from '../components/PikerPanel';
 
 class DashboardScreen extends React.Component {
 
     constructor() {
         super();
 
-        this.year = new Date(Date.now()).getFullYear();
-        this.month = new Date(Date.now()).getMonth();
-
         this.state = {
-            showMonthPicker: false
-
+            showMonthPicker: false,
+            showYearPicker: false
         }
     }
 
     componentDidMount() {
-        this.props?.getCurrencyAverageForGivenMonthRedux({month: this.month, year: this.year});
+        this.props?.getCurrencyAverageForGivenMonthRedux(this.props?.currency?.month, this.props?.currency?.year);
     }
-
-    goToTheDetails = () => {
-        this.props.navigation.navigate('CurrencyDetailsScreen');
-    };
 
     onCloseMonthPicker = (value) => {
         this.setState({
@@ -49,9 +41,8 @@ class DashboardScreen extends React.Component {
         });
 
         if (value !== null) {
-            this.month = value;
             this.props?.setMonthRedux(value);
-            this.props?.getCurrencyAverageForGivenMonthRedux({month: this.month, year: this.year});
+            this.props?.getCurrencyAverageForGivenMonthRedux(value, this.props?.currency?.year);
         }
     }
 
@@ -65,35 +56,37 @@ class DashboardScreen extends React.Component {
         });
 
         if (value !== null) {
-            if(currentYear === value && this.props?.currency?.month > currentMonth) {
-                this.month = currentMonth;
+            if (currentYear === value && this.props?.currency?.month > currentMonth) {
                 this.props?.setMonthRedux(currentMonth);
             }
-            
-            this.year = value;
+
             this.props?.setYearRedux(value);
-            this.props?.getCurrencyAverageForGivenMonthRedux({month: this.month, year: this.year});
+            this.props?.getCurrencyAverageForGivenMonthRedux(this.props?.currency?.month, value);
         }
     }
 
-    onCurrency = () => {
-        console.log('Currency tapped');
-    }
-    
-    onBuy = () => {
-        console.log('Buy tapped');
-    }
-    
-    onSell = () => {
-        console.log('Sell tapped');
+    onRow = (value) => {
+
+        if (this.props?.currency?.averageValues?.length > value) {
+            this.props.navigation.navigate('CurrencyDetailsScreen',
+                {
+                    currency: this.props?.currency?.averageValues[value].currency,
+                    month: this.props?.currency?.month,
+                    year: this.props?.currency?.year
+                });
+        }
     }
 
-    onRow = (value) => {
-        console.log('Row tapped', value);
+    onYearPiker = () => {
+        this.setState({ showYearPicker: true })
+    }
+
+    onMonthPiker = () => {
+        this.setState({ showMonthPicker: true })
     }
 
     render() {
-        console.log(`month: ${this.props?.currency.month}, year: ${this.props?.currency.year}`);
+
         return (
             <View style={styles.container}>
                 <LinearGradient style={styles.gradientBackground}
@@ -104,47 +97,24 @@ class DashboardScreen extends React.Component {
                         <View style={styles.screanTitleContainer}>
                             <Text style={theme.screanTitle}>{STRINGS.DASHBOARD_TITLE}</Text>
                         </View>
-                        <View style={styles.selectorsContainer}>
-                            <View style={styles.leftSelectorContainer}>
-                            <View style={styles.selectorArrowBackground}/>
-                                <TouchableOpacity onPress={() => { this.setState({ showMonthPicker: true }) }} style={styles.monthSelector}>
-                                    
-                                    <View style={styles.selectorTextContainer}>
-                                        <Text style={[theme.whiteBoldText, {marginRight: 20}]}>{STRINGS.MONTHS[this.props?.currency?.month]}</Text>
-                                    </View>
-                                    <View style={styles.selectorArrowContainer}>
-                                        <Icon name="arrow-drop-down" size={24} color={'#e6e6e6'} />
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.rightSelectorContainer}>
-                            <View style={styles.selectorArrowBackground}/>
-                            <TouchableOpacity onPress={() => { this.setState({ showYearPicker: true }) }} style={styles.monthSelector}>
-                                    <View style={styles.selectorTextContainer}>
-                                        <Text style={[theme.whiteBoldText, {marginRight: 20}]}>{this.props?.currency?.year}</Text>
-                                    </View>
-                                    <View style={styles.selectorArrowContainer}>
-                                        <Icon name="arrow-drop-down" size={24} color={'#e6e6e6'} />
-                                    </View>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                        <PikerPanel month={this.props?.currency?.month} year={this.props?.currency?.year} onYearPiker={this.onYearPiker} onMonthPiker={this.onMonthPiker} />
 
-                        <Table headers={[STRINGS.CURRENCY, STRINGS.BUY, STRINGS.SELL]} 
-                            data={this.props?.currency?.averageValues} 
-                            onHeadersSelected={[this.onCurrency, this.onBuy, this.onSell]} 
+                        <Table headers={[STRINGS.CURRENCY, STRINGS.BUY, STRINGS.SELL]}
+                            data={this.props?.currency?.averageValues}
+                            // onHeadersSelected={[this.onCurrency, this.onBuy, this.onSell]}
                             onRowSelected={this.onRow}
-                            sortable={false}/>
+                            sortable={false} />
 
                         <View style={styles.labelTextContainer}>
                             <Text style={theme.whiteBoldText}>{STRINGS.DASHBOARD_TABLE_BOTTOM_LABEL}</Text>
                         </View>
 
-                        {this.state.showMonthPicker === true ? (<View style={styles.modal}><MonthPicker onClose={this.onCloseMonthPicker}  year={this.props?.currency?.year} month={this.props?.currency?.month} /></View>) : null}
-                        {this.state.showYearPicker === true ? (<View style={styles.modal}><YearPicker onClose={this.onCloseYearPicker} year={this.props?.currency?.year} /></View>) : null}
-                        {this.props?.currency?.taskStatus === TASK_STATUS.PENDING ? (<View style={styles.activityIndicatorContainer}><ActivityIndicator size="large" color={colors.blueColor} /></View>) : null}
+
                     </SafeAreaView>
                 </LinearGradient>
+                {this.state.showMonthPicker === true ? (<View style={styles.modal}><MonthPicker onClose={this.onCloseMonthPicker} year={this.props?.currency?.year} month={this.props?.currency?.month} /></View>) : null}
+                        {this.state.showYearPicker === true ? (<View style={styles.modal}><YearPicker onClose={this.onCloseYearPicker} year={this.props?.currency?.year} /></View>) : null}
+                        {this.props?.currency?.taskStatus === TASK_STATUS.PENDING ? (<View style={styles.activityIndicatorContainer}><ActivityIndicator size="large" color={colors.blueColor} /></View>) : null}
             </View>
         )
     }
@@ -163,51 +133,6 @@ const styles = StyleSheet.create({
     },
     gradientBackground: {
         flex: 1,
-    },
-    selectorsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        margin: 20
-    },
-    leftSelectorContainer: {
-        justifyContent: 'center',
-        alignItems: 'flex-start',
-        borderWidth: 1,
-        borderColor: colors.blueColor,
-        borderRadius: 5,
-        padding: 5,
-        backgroundColor: colors.modalBackgroundColor
-    },
-    rightSelectorContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 1,
-        borderColor: colors.blueColor,
-        borderRadius: 5,
-        padding: 5,
-        backgroundColor: colors.modalBackgroundColor
-    },
-    monthSelector: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    selectorArrowBackground: {
-        position: 'absolute',
-        top: 0,
-        right: 0,
-        bottom: 0,
-        borderTopRightRadius: 5,
-        borderBottomRightRadius: 5,
-        width: 40,
-        backgroundColor: colors.blueColor,
-    },
-    selectorArrowContainer: {
-        width: 30,
-        marginLeft: 10,
-        justifyContent: 'center',
-        alignItems: 'center',
     },
     labelTextContainer: {
         marginTop: 5,
@@ -244,9 +169,9 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getCurrencyAverageForGivenMonthRedux: (value) => dispatch({
+        getCurrencyAverageForGivenMonthRedux: (month, year) => dispatch({
             type: CURRENCY_ACTION_TYPE.GET_AVERAGE_FOR_GIVEN_MONTH,
-            value
+            value : { month, year }
         }),
         clearDataRedux: () => dispatch({
             type: CURRENCY_ACTION_TYPE.CLEAR_DATA

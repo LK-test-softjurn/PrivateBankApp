@@ -5,22 +5,25 @@ import { API_ERROR } from '../common/consts';
 import { url } from '../common/config';
 import { errorLog } from '../common/errorHelper';
 
-
 export async function fetchDatafromUrl (date) {
-    // console.log('STORE', store.getState());
     try {
+        console.log('FETCH DATE:', date);
+
         const res = await fetch(`${url}${date}`);
+
+        console.log('FETCH DATE: - finished', res);
+
         if(res!== undefined && res?.status === 200){
             const parsed = await res.json();
+            console.log('FETCH DATE: - json', parsed);
             if(parsed !== undefined && parsed !== null) {
                 return parsed;
-            } else {
-                return API_ERROR.API_ERROR_UNDEFINED;    
             }
-        } else {
-            return API_ERROR.API_ERROR_UNDEFINED;
         }
+        throw API_ERROR.API_ERROR_UNDEFINED;
+        
     } catch(err) {
-        errorLog('apiService / fetchDatafromURL', error);
+        errorLog('privateBankApi / fetchDatafromURL', err);
+        throw API_ERROR.API_ERROR_UNDEFINED;
     }
 }
