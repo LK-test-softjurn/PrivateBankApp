@@ -1,12 +1,10 @@
 // imports external
 
 // imports internal
-import { getCurencyDataByMonthApiService } from '../services/apiService';
 import { monthDays } from '../common/consts';
 import { getCurrencyMonthDataDbService, 
     getCurrenciesAveragesMonthDataDbService } from '../services/dbService';
 
-// import { removeDuplicates } from '../db/realmDb';
 
 export async function getCurenciesAveragesByMonthDataService(value) {
 

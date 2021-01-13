@@ -43,44 +43,6 @@ function* getCurrencyData(value) {
         throw err;
     }
 }
-//     try {
-
-//         yield put({
-//             type: CURRENCY_DETAILS_ACTION_TYPE.TASK_STATUS,
-//             value: TASK_STATUS.PENDING 
-//         })
-//         yield put({
-//             type: CURRENCY_DETAILS_ACTION_TYPE.CLEAR_DATA,
-//         })
-// console.log('SAGA - START', new Date(Date.now()));
-//         const res = yield call(getCurencyDataByMonthDataService, action.value);
-// console.log('SAGA - STOP', new Date(Date.now()));
-//         if(res) {
-//             yield put({
-//                 type: CURRENCY_DETAILS_ACTION_TYPE.READY_DATA_FOR_GIVEN_MONTH,
-//                 value: res
-//             })
-
-//         } else {
-//             yield put({
-//                 type: CURRENCY_DETAILS_ACTION_TYPE.TASK_STATUS,
-//                 value: TASK_STATUS.ERROR
-//             })  
-//         }
-
-//         yield put({
-//             type: CURRENCY_DETAILS_ACTION_TYPE.TASK_STATUS,
-//             value: TASK_STATUS.NONE
-//         })
-//     }
-//     catch (err) {
-//         errorLog('currencyDetailSaga / getCurrencyDataForGivenMonth', err);
-//         yield put({
-//             type: CURRENCY_DETAILS_ACTION_TYPE.TASK_STATUS,
-//             value: TASK_STATUS.ERROR
-//         })  
-//     }
-// }
 
 export function* watchGetCurrencyDataForGivenMonth() {
     yield takeLatest(CURRENCY_DETAILS_ACTION_TYPE.GET_DATA_FOR_GIVEN_MONTH_BY_CURRENCY, getCurrencyDataForGivenMonth);

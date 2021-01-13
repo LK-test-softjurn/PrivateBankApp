@@ -9,7 +9,7 @@ export const CurrencySchema = {
     name: CurrencySchemaName,
     properties: {
       currency: 'string',
-      date: 'date', // faster sorting with separate fields for day/month/year
+      date: 'date', 
       day: {type: 'int', default: 0},
       month: {type: 'int', default: 0},
       year: {type: 'int', default: 0},

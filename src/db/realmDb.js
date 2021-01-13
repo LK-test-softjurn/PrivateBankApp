@@ -11,7 +11,7 @@ var base64js = require('base64-js');
 // the secreet should be in separet file not stored in repo, but this is not commercial project ;-)
 const b64 = 'mxEfOX1HNhh0Yv1AIggk7HcdoNU3hcJBOGMN5TXf6xtSUgAQySAlQuNLXtQNmh27RVmwXbhaFuO8lvg8hsr5GQ==';
 const key = base64js.toByteArray(b64);
-var realm;// = new Realm({schema: [CurrencySchema], encryptionKey: key}); 
+var realm;
 
 export function storeDataRealmDb(day, month, year, data) {
 

@@ -45,51 +45,6 @@ function* getAverages(value) {
     }
 }
 
-// function* fetchAllMonthDaysData(callback, value) {
-//     try { 
-//         const dates = getDataFromApi(value);
-//         const fetchResultArray = yield all(dates.map(x => call(getCurencyDataByDayApiService, x)));
-//         if(fetchResultArray?.length > 0) {
-//             yield call(writeDataToDB, fetchResultArray, callback, value);
-//         } else {
-//             yield setStatus(TASK_STATUS.ERROR);
-//         }
-
-//     } catch (err) {
-//         errorLog('currencySaga / fetchAllMonthDaysData', err);
-//         throw err;
-//     }
-//   }
-
-// function* writeDataToDB(data, callbacek, value) {
-//     try {
-//         const result = yield call(storeDataDbService, data); 
-//         if(result === true) {
-//             const res = yield call(callbacek, value);
-
-//             if(res?.length > 0) {
-//                 yield put({
-//                     type: CURRENCY_ACTION_TYPE.READY_AVERAGE_FOR_GIVEN_MONTH,
-//                     value: res
-//                 })
-//                 yield setStatus(TASK_STATUS.NONE);
-//             } else {
-//                 yield setStatus(TASK_STATUS.ERROR);
-//             }
-//         }
-//     } catch (err) {
-//         errorLog('currencySaga / writeDataToDB', err);
-//         throw err;
-//     }
-// }
-
-// function* setStatus(status) {
-//     yield put({
-//         type: CURRENCY_ACTION_TYPE.TASK_STATUS,
-//         value: status
-//     })
-// }
-
 export function* watchGetCurrencyAverageForGivenMonth() {
     yield takeLatest(CURRENCY_ACTION_TYPE.GET_AVERAGE_FOR_GIVEN_MONTH, getCurrencyAverageForGivenMonth);
 }

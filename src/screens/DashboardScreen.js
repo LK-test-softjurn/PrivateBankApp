@@ -47,7 +47,7 @@ class DashboardScreen extends React.Component {
     }
 
     componentWillUnmount() {
-        if(this.willFocusSubscription) {
+        if (this.willFocusSubscription) {
             this?.willFocusSubscription();
         }
     }
@@ -96,13 +96,13 @@ class DashboardScreen extends React.Component {
     }
 
     onYearPiker = () => {
-        if(this.props?.currency?.taskStatus === TASK_STATUS.NONE) {
+        if (this.props?.currency?.taskStatus === TASK_STATUS.NONE) {
             this.setState({ showYearPicker: true })
         }
     }
 
     onMonthPiker = () => {
-        if(this.props?.currency?.taskStatus === TASK_STATUS.NONE) {
+        if (this.props?.currency?.taskStatus === TASK_STATUS.NONE) {
             this.setState({ showMonthPicker: true })
         }
     }

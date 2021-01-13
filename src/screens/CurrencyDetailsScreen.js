@@ -12,11 +12,13 @@ import { connect } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // imports internal
-import {  CURRENCY_ACTION_TYPE, 
-    CURRENCY_DETAILS_ACTION_TYPE, 
-    TASK_STATUS, 
+import {
+    CURRENCY_ACTION_TYPE,
+    CURRENCY_DETAILS_ACTION_TYPE,
+    TASK_STATUS,
     MESSAGE_BOX_TYPE,
-    SORT_FIELD_TYPE } from '../common/consts';
+    SORT_FIELD_TYPE
+} from '../common/consts';
 import { Table } from '../components/Table';
 import { MessageBox } from '../components/MessageBox';
 import { STRINGS } from '../common/constsStrings';
@@ -38,7 +40,7 @@ class CurrencyDetailsScreen extends React.Component {
     }
 
     componentDidMount() {
-        const {month, year} = this.props?.currency;
+        const { month, year } = this.props?.currency;
 
         this.props.getCurrencyDataForGivenMonthRedux(this.props.route?.params?.currency, month, year, SORT_FIELD_TYPE.DATE, false);
     }
@@ -75,7 +77,7 @@ class CurrencyDetailsScreen extends React.Component {
     }
 
     goBack = () => {
-        if(this.props?.currencyDetails?.taskStatus === TASK_STATUS.NONE) {
+        if (this.props?.currencyDetails?.taskStatus === TASK_STATUS.NONE) {
             this.props.navigation.goBack();
         }
     }
@@ -87,49 +89,49 @@ class CurrencyDetailsScreen extends React.Component {
     onDate = (value) => {
         this.props?.getCurrencyDataForGivenMonthRedux(this.props.route.params.currency, this.props?.currency?.month, this.props?.currency?.year, SORT_FIELD_TYPE.DATE, value);
     }
-    
+
     onBuy = (value) => {
         this.props?.getCurrencyDataForGivenMonthRedux(this.props.route.params.currency, this.props?.currency?.month, this.props?.currency?.year, SORT_FIELD_TYPE.BUY, value);
     }
-    
+
     onSell = (value) => {
         this.props?.getCurrencyDataForGivenMonthRedux(this.props.route.params.currency, this.props?.currency?.month, this.props?.currency?.year, SORT_FIELD_TYPE.SELL, value);
     }
 
     onYearPiker = () => {
-        if(this.props?.currencyDetails?.taskStatus === TASK_STATUS.NONE) {
+        if (this.props?.currencyDetails?.taskStatus === TASK_STATUS.NONE) {
             this.setState({ showYearPicker: true })
         }
     }
 
     onMonthPiker = () => {
-        if(this.props?.currencyDetails?.taskStatus === TASK_STATUS.NONE) {
+        if (this.props?.currencyDetails?.taskStatus === TASK_STATUS.NONE) {
             this.setState({ showMonthPicker: true })
         }
     }
 
     render() {
- 
+
         return (<View style={styles.container}>
 
-                <SafeAreaView>
-                    <View style={styles.screanTitleContainer}>
-                        <TouchableOpacity onPress={() => this.goBack()} style={styles.headerButtonContainer}>
-                            <Icon name="arrow-left" size={32} color={colors.whiteColor} />
-                            <Text style={theme.whiteBoldText}>{STRINGS.BACK}</Text>
-                        </TouchableOpacity>
-                        <Text style={theme.screanTitle}>{this.props.route.params.currency}</Text>
-                        <View style={styles.headerButtonContainer}/>
-                    </View>
-                    <PikerPanel month={this.props?.currency?.month} year={this.props?.currency?.year} onYearPiker={this.onYearPiker} onMonthPiker={this.onMonthPiker} />
-                    <View style={styles.tableContainer}>
-                        <Table headers={[STRINGS.DATE, STRINGS.BUY, STRINGS.SELL]} 
-                                data={this.props?.currencyDetails?.dailyValues} 
-                                onHeadersSelected={[this.onDate, this.onBuy, this.onSell]} 
-                                sortable={true}/>
-                    </View>
-                </SafeAreaView>
-           
+            <SafeAreaView>
+                <View style={styles.screanTitleContainer}>
+                    <TouchableOpacity onPress={() => this.goBack()} style={styles.headerButtonContainer}>
+                        <Icon name="arrow-left" size={32} color={colors.whiteColor} />
+                        <Text style={theme.whiteBoldText}>{STRINGS.BACK}</Text>
+                    </TouchableOpacity>
+                    <Text style={theme.screanTitle}>{this.props.route.params.currency}</Text>
+                    <View style={styles.headerButtonContainer} />
+                </View>
+                <PikerPanel month={this.props?.currency?.month} year={this.props?.currency?.year} onYearPiker={this.onYearPiker} onMonthPiker={this.onMonthPiker} />
+                <View style={styles.tableContainer}>
+                    <Table headers={[STRINGS.DATE, STRINGS.BUY, STRINGS.SELL]}
+                        data={this.props?.currencyDetails?.dailyValues}
+                        onHeadersSelected={[this.onDate, this.onBuy, this.onSell]}
+                        sortable={true} />
+                </View>
+            </SafeAreaView>
+
             {this.state.showMonthPicker === true ? (<View style={styles.modal}><MonthPicker onClose={this.onCloseMonthPicker} year={this.props?.currency?.year} month={this.props?.currency?.month} /></View>) : null}
             {this.state.showYearPicker === true ? (<View style={styles.modal}><YearPicker onClose={this.onCloseYearPicker} year={this.props?.currency?.year} /></View>) : null}
             {this.props?.currencyDetails?.taskStatus === TASK_STATUS.PENDING ? (<View style={styles.activityIndicatorContainer}><ActivityIndicator size="large" color={colors.greenColor} /></View>) : null}
@@ -192,7 +194,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getCurrencyDataForGivenMonthRedux: (currency, month, year, sortByField, asc) => dispatch({
             type: CURRENCY_DETAILS_ACTION_TYPE.GET_DATA_FOR_GIVEN_MONTH_BY_CURRENCY,
-            value: { currency, month, year, sortByField, asc } 
+            value: { currency, month, year, sortByField, asc }
         }),
         clearDataRedux: () => dispatch({
             type: CURRENCY_DETAILS_ACTION_TYPE.CLEAR_DATA
