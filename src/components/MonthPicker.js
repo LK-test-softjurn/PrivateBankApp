@@ -40,7 +40,7 @@ export const MonthPicker = ({ month, year, onClose }) => {
     return (
         <View style={styles.pickerContainer}>
             <View style={styles.headerContainer}>
-                <Text style={theme.whiteBoldText}>{STRINGS.MONTHS[chosenMonth]}</Text>
+                <Text style={theme.pickerSelectedText}>{STRINGS.MONTHS[chosenMonth]}</Text>
             </View>
             <View style={styles.monthsContainer}>
             <FlatList
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
         borderColor: colors.whiteColor
     },
     selectedMonth: {
-        backgroundColor: colors.blueColor,
+        backgroundColor: colors.greenColor,
         padding: 10,
         margin: 10,
     },

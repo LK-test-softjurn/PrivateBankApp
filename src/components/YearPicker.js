@@ -30,7 +30,7 @@ export const YearPicker = ({ year, onClose }) => {
     return (
         <View style={styles.pickerContainer}>
             <View style={styles.headerContainer}>
-                <Text style={theme.whiteBoldText}>{chosenYear}</Text>
+                <Text style={theme.pickerSelectedText}>{chosenYear}</Text>
             </View>
             <View style={styles.monthsContainer}>
             <FlatList

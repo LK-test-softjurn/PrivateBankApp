@@ -7,18 +7,23 @@ import {
     SafeAreaView,
     StyleSheet,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
 import { connect } from 'react-redux';
 
 // imports internal
 import { Table } from '../components/Table';
-import { CURRENCY_ACTION_TYPE, TASK_STATUS } from '../common/consts';
+import {
+    CURRENCY_ACTION_TYPE,
+    MESSAGE_BOX_TYPE,
+    TASK_STATUS,
+    NAVIGATOR_SCREENS
+} from '../common/consts';
 import { theme } from '../../styles/theme';
 import { colors } from '../../styles/colors';
 import { MonthPicker } from '../components/MonthPicker';
 import { YearPicker } from '../components/YearPicker';
 import { STRINGS } from '../common/constsStrings';
 import { PikerPanel } from '../components/PikerPanel';
+import { MessageBox } from '../components/MessageBox';
 
 class DashboardScreen extends React.Component {
 
@@ -33,6 +38,18 @@ class DashboardScreen extends React.Component {
 
     componentDidMount() {
         this.props?.getCurrencyAverageForGivenMonthRedux(this.props?.currency?.month, this.props?.currency?.year);
+        this.willFocusSubscription = this.props.navigation.addListener(
+            'focus',
+            () => {
+                this.props?.getCurrencyAverageForGivenMonthRedux(this.props?.currency?.month, this.props?.currency?.year);
+            }
+        );
+    }
+
+    componentWillUnmount() {
+        if(this.willFocusSubscription) {
+            this?.willFocusSubscription();
+        }
     }
 
     onCloseMonthPicker = (value) => {
@@ -56,19 +73,20 @@ class DashboardScreen extends React.Component {
         });
 
         if (value !== null) {
+            this.props?.setYearRedux(value);
             if (currentYear === value && this.props?.currency?.month > currentMonth) {
                 this.props?.setMonthRedux(currentMonth);
+                this.props?.getCurrencyAverageForGivenMonthRedux(currentMonth, value);
+            } else {
+                this.props?.getCurrencyAverageForGivenMonthRedux(this.props?.currency?.month, value);
             }
-
-            this.props?.setYearRedux(value);
-            this.props?.getCurrencyAverageForGivenMonthRedux(this.props?.currency?.month, value);
         }
     }
 
     onRow = (value) => {
 
         if (this.props?.currency?.averageValues?.length > value) {
-            this.props.navigation.navigate('CurrencyDetailsScreen',
+            this.props.navigation.navigate(NAVIGATOR_SCREENS.CURRENCY_DETAILS,
                 {
                     currency: this.props?.currency?.averageValues[value].currency,
                     month: this.props?.currency?.month,
@@ -78,43 +96,47 @@ class DashboardScreen extends React.Component {
     }
 
     onYearPiker = () => {
-        this.setState({ showYearPicker: true })
+        if(this.props?.currency?.taskStatus === TASK_STATUS.NONE) {
+            this.setState({ showYearPicker: true })
+        }
     }
 
     onMonthPiker = () => {
-        this.setState({ showMonthPicker: true })
+        if(this.props?.currency?.taskStatus === TASK_STATUS.NONE) {
+            this.setState({ showMonthPicker: true })
+        }
+    }
+
+    onCloseErrorMessageBox = () => {
+        this.props?.clearErrorRedux()
     }
 
     render() {
 
         return (
             <View style={styles.container}>
-                <LinearGradient style={styles.gradientBackground}
-                    colors={colors.grayGradient}
-                    start={{ x: 0.0, y: 0.3 }} end={{ x: 1.0, y: 1.0 }}
-                >
-                    <SafeAreaView>
-                        <View style={styles.screanTitleContainer}>
-                            <Text style={theme.screanTitle}>{STRINGS.DASHBOARD_TITLE}</Text>
-                        </View>
-                        <PikerPanel month={this.props?.currency?.month} year={this.props?.currency?.year} onYearPiker={this.onYearPiker} onMonthPiker={this.onMonthPiker} />
 
-                        <Table headers={[STRINGS.CURRENCY, STRINGS.BUY, STRINGS.SELL]}
-                            data={this.props?.currency?.averageValues}
-                            // onHeadersSelected={[this.onCurrency, this.onBuy, this.onSell]}
-                            onRowSelected={this.onRow}
-                            sortable={false} />
+                <SafeAreaView>
+                    <View style={styles.screanTitleContainer}>
+                        <Text style={theme.screanTitle}>{STRINGS.DASHBOARD_TITLE}</Text>
+                    </View>
+                    <PikerPanel month={this.props?.currency?.month} year={this.props?.currency?.year} onYearPiker={this.onYearPiker} onMonthPiker={this.onMonthPiker} />
 
-                        <View style={styles.labelTextContainer}>
-                            <Text style={theme.whiteBoldText}>{STRINGS.DASHBOARD_TABLE_BOTTOM_LABEL}</Text>
-                        </View>
+                    <Table headers={[STRINGS.CURRENCY, STRINGS.BUY, STRINGS.SELL]}
+                        data={this.props?.currency?.averageValues}
+                        onRowSelected={this.onRow}
+                        sortable={false} />
 
+                    <View style={styles.labelTextContainer}>
+                        <Text style={theme.whiteBoldText}>{STRINGS.DASHBOARD_TABLE_BOTTOM_LABEL}</Text>
+                    </View>
 
-                    </SafeAreaView>
-                </LinearGradient>
+                </SafeAreaView>
+
                 {this.state.showMonthPicker === true ? (<View style={styles.modal}><MonthPicker onClose={this.onCloseMonthPicker} year={this.props?.currency?.year} month={this.props?.currency?.month} /></View>) : null}
-                        {this.state.showYearPicker === true ? (<View style={styles.modal}><YearPicker onClose={this.onCloseYearPicker} year={this.props?.currency?.year} /></View>) : null}
-                        {this.props?.currency?.taskStatus === TASK_STATUS.PENDING ? (<View style={styles.activityIndicatorContainer}><ActivityIndicator size="large" color={colors.blueColor} /></View>) : null}
+                {this.state.showYearPicker === true ? (<View style={styles.modal}><YearPicker onClose={this.onCloseYearPicker} year={this.props?.currency?.year} /></View>) : null}
+                {this.props?.currency?.taskStatus === TASK_STATUS.PENDING ? (<View style={styles.activityIndicatorContainer}><ActivityIndicator size="large" color={colors.greenColor} /></View>) : null}
+                {this.props?.currency?.taskStatus === TASK_STATUS.ERROR ? (<MessageBox type={MESSAGE_BOX_TYPE.ERROR} header={STRINGS.MESSAGE_BOX_ERROR_HEADER} text={STRINGS.MESSAGE_BOX_ERROR_SERVER_COMMUNICATION} onClose={this.onCloseErrorMessageBox} />) : null}
             </View>
         )
     }
@@ -123,6 +145,7 @@ class DashboardScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: colors.liteGrayColor
     },
     screanTitleContainer: {
         marginTop: 10,
@@ -130,9 +153,6 @@ const styles = StyleSheet.create({
         marginVertical: 20,
         justifyContent: 'center',
         alignItems: 'center',
-    },
-    gradientBackground: {
-        flex: 1,
     },
     labelTextContainer: {
         marginTop: 5,
@@ -171,7 +191,7 @@ const mapDispatchToProps = (dispatch) => {
     return {
         getCurrencyAverageForGivenMonthRedux: (month, year) => dispatch({
             type: CURRENCY_ACTION_TYPE.GET_AVERAGE_FOR_GIVEN_MONTH,
-            value : { month, year }
+            value: { month, year }
         }),
         clearDataRedux: () => dispatch({
             type: CURRENCY_ACTION_TYPE.CLEAR_DATA
@@ -183,6 +203,9 @@ const mapDispatchToProps = (dispatch) => {
         setYearRedux: (value) => dispatch({
             type: CURRENCY_ACTION_TYPE.SET_CHOSEN_YEAR,
             value
+        }),
+        clearErrorRedux: () => dispatch({
+            type: CURRENCY_ACTION_TYPE.CLEAR_ERROR,
         })
     }
 }

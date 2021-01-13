@@ -7,6 +7,8 @@ import { Provider } from 'react-redux';
 // imports internal 
 import DashboardScreen from './screens/DashboardScreen';
 import CurrencyDetailsScreen from './screens/CurrencyDetailsScreen';
+import { colors } from '../styles/colors';
+import { NAVIGATOR_SCREENS } from './common/consts';
 import { store } from './redux/store';
 
 const Stack = createStackNavigator();
@@ -20,13 +22,14 @@ const App: (props) => ReactNative = () => {
     return (
         <Provider store={store}>
             <NavigationContainer>
-            <Stack.Navigator initialRouteName="DashboardScreen"
+            <Stack.Navigator initialRouteName={NAVIGATOR_SCREENS.DASHBOARD}
                 screenOptions={{
-                    headerShown: false
+                    headerShown: false,
+                    cardStyle: { backgroundColor: colors.liteGrayColor },
                 }}
             >
-                <Stack.Screen name="DashboardScreen" component={DashboardScreen} />
-                <Stack.Screen name="CurrencyDetailsScreen" component={CurrencyDetailsScreen} />
+                <Stack.Screen name={NAVIGATOR_SCREENS.DASHBOARD} component={DashboardScreen} />
+                <Stack.Screen name={NAVIGATOR_SCREENS.CURRENCY_DETAILS} component={CurrencyDetailsScreen} />
             </Stack.Navigator>
         </NavigationContainer>
     </Provider>

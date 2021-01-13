@@ -2,7 +2,7 @@
 
 // imports internal
 import { errorLog } from '../common/errorHelper';
-import { API_ERROR, monthDays } from '../common/consts';
+import { API_ERROR, DB_ERROR, monthDays } from '../common/consts';
 import { currencyTable } from '../common/config';
 import { storeDataRealmDb, 
     getCurrencyMonthDataRealmDb, 
@@ -15,24 +15,22 @@ export async function storeDataDbService(data) {
         
         for(let i = 0; i < maxIndex; i++) {
             if(data[i] !== API_ERROR.API_ERROR_UNDEFINED) {
-                const dateArray = data[i]?.date?.split('.'); // european format  of date: dd.mm.yyyy
+                const dateArray = data[i]?.date?.split('.'); 
                 allStorageArray.push(storeDataRealmDb(dateArray[0], dateArray[1], dateArray[2],  data[i]?.exchangeRate?.filter(filterCurrency)));
             }
         }
 
         const res = await Promise.all(allStorageArray); 
-
         return true;
 
     } catch (err) {
         errorLog('dbService / storeDataDbService', err);
-        return false;
+        throw DB_ERROR.WRITE;
     }
 }
 
 export function getCurrencyMonthDataDbService(currency, month, year, sortByField, asc) {
-   // {"currency": "EUR", "date": "2021-01-11T00:00:00.000Z", "day": 11, "month": 1, "purchaseRate": 34.04999923706055, "purchaseRateNB": 34.909000396728516, "saleRate": 34.650001525878906, "saleRateNB": 34.909000396728516, "year": 2021}
-    return getCurrencyMonthDataRealmDb(currency, month, year, sortByField, asc);
+   return getCurrencyMonthDataRealmDb(currency, month, year, sortByField, asc);
 }
 
 export function getCurrenciesAveragesMonthDataDbService(month, year) {

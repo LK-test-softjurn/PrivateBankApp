@@ -9,7 +9,6 @@ import {
     SafeAreaView
 } from 'react-native';
 import { connect } from 'react-redux';
-import LinearGradient from 'react-native-linear-gradient';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // imports internal
@@ -65,21 +64,24 @@ class CurrencyDetailsScreen extends React.Component {
         });
 
         if (value !== null) {
+            this.props?.setYearRedux(value);
             if (currentYear === value && this.props?.currency?.month > currentMonth) {
                 this.props?.setMonthRedux(currentMonth);
+                this.props?.getCurrencyDataForGivenMonthRedux(this.props.route.params.currency, currentMonth, value, SORT_FIELD_TYPE.DATE, false);
+            } else {
+                this.props?.getCurrencyDataForGivenMonthRedux(this.props.route.params.currency, this.props?.currency?.month, value, SORT_FIELD_TYPE.DATE, false);
             }
-
-            this.props?.setYearRedux(value);
-            this.props?.getCurrencyDataForGivenMonthRedux(this.props.route.params.currency, this.props?.currency?.month, value, SORT_FIELD_TYPE.DATE, false);
         }
     }
 
     goBack = () => {
-        this.props.navigation.goBack();
+        if(this.props?.currencyDetails?.taskStatus === TASK_STATUS.NONE) {
+            this.props.navigation.goBack();
+        }
     }
 
-    onClose = () => {
-        this.props?.clearError()
+    onCloseErrorMessageBox = () => {
+        this.props?.clearErrorRedux()
     }
 
     onDate = (value) => {
@@ -95,20 +97,21 @@ class CurrencyDetailsScreen extends React.Component {
     }
 
     onYearPiker = () => {
-        this.setState({ showYearPicker: true })
+        if(this.props?.currencyDetails?.taskStatus === TASK_STATUS.NONE) {
+            this.setState({ showYearPicker: true })
+        }
     }
 
     onMonthPiker = () => {
-        this.setState({ showMonthPicker: true })
+        if(this.props?.currencyDetails?.taskStatus === TASK_STATUS.NONE) {
+            this.setState({ showMonthPicker: true })
+        }
     }
 
     render() {
-        console.log(this.props?.currencyDetails?.taskStatus)
+ 
         return (<View style={styles.container}>
-            <LinearGradient style={styles.gradientBackground}
-                colors={colors.grayGradient}
-                start={{ x: 0.0, y: 0.3 }} end={{ x: 1.0, y: 1.0 }}
-            >
+
                 <SafeAreaView>
                     <View style={styles.screanTitleContainer}>
                         <TouchableOpacity onPress={() => this.goBack()} style={styles.headerButtonContainer}>
@@ -123,26 +126,22 @@ class CurrencyDetailsScreen extends React.Component {
                         <Table headers={[STRINGS.DATE, STRINGS.BUY, STRINGS.SELL]} 
                                 data={this.props?.currencyDetails?.dailyValues} 
                                 onHeadersSelected={[this.onDate, this.onBuy, this.onSell]} 
-                            // onRowSelected={this.onRow}
                                 sortable={true}/>
                     </View>
                 </SafeAreaView>
-            </LinearGradient>
+           
             {this.state.showMonthPicker === true ? (<View style={styles.modal}><MonthPicker onClose={this.onCloseMonthPicker} year={this.props?.currency?.year} month={this.props?.currency?.month} /></View>) : null}
             {this.state.showYearPicker === true ? (<View style={styles.modal}><YearPicker onClose={this.onCloseYearPicker} year={this.props?.currency?.year} /></View>) : null}
-            {this.props?.currencyDetails?.taskStatus === TASK_STATUS.PENDING ? (<View style={styles.activityIndicatorContainer}><ActivityIndicator size="large" color={colors.blueColor} /></View>) : null}
-            {this.props?.currencyDetails?.taskStatus === TASK_STATUS.ERROR ? (<MessageBox type={MESSAGE_BOX_TYPE.ERROR} header={STRINGS.MESSAGE_BOX_ERROR_HEADER} text={STRINGS.MESSAGE_BOX_ERROR_SERVER_COMMUNICATION} onClose={this.onClose} />) : null}
-            {this.props?.currencyDetails?.taskStatus === TASK_STATUS.ACCOMPLISHED ? (<MessageBox type={MESSAGE_BOX_TYPE.INFO} header={STRINGS.MESSAGE_BOX_ERROR_HEADER} text={STRINGS.MESSAGE_BOX_ERROR_SERVER_COMMUNICATION} onClose={this.onClose} />) : null}
+            {this.props?.currencyDetails?.taskStatus === TASK_STATUS.PENDING ? (<View style={styles.activityIndicatorContainer}><ActivityIndicator size="large" color={colors.greenColor} /></View>) : null}
+            {this.props?.currencyDetails?.taskStatus === TASK_STATUS.ERROR ? (<MessageBox type={MESSAGE_BOX_TYPE.ERROR} header={STRINGS.MESSAGE_BOX_ERROR_HEADER} text={STRINGS.MESSAGE_BOX_ERROR_SERVER_COMMUNICATION} onClose={this.onCloseErrorMessageBox} />) : null}
         </View>)
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
-    },
-    gradientBackground: {
-        flex: 1
+        flex: 1,
+        backgroundColor: colors.liteGrayColor
     },
     activityIndicatorContainer: {
         position: 'absolute',
@@ -163,6 +162,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         flexDirection: 'row'
+    },
+    modal: {
+        position: 'absolute',
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     headerButtonContainer: {
         flexDirection: 'row',
@@ -196,6 +204,9 @@ const mapDispatchToProps = (dispatch) => {
         setYearRedux: (value) => dispatch({
             type: CURRENCY_ACTION_TYPE.SET_CHOSEN_YEAR,
             value
+        }),
+        clearErrorRedux: () => dispatch({
+            type: CURRENCY_DETAILS_ACTION_TYPE.CLEAR_ERROR,
         })
     }
 }

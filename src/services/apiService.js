@@ -12,7 +12,7 @@ export async function getCurencyDataByMonthApiService(dates) {
     try {   
         const allDaysDataFetch = [];
 
-        const maxIndex = 2;//dates?.length;
+        const maxIndex = dates?.length;
         for (let i = 0; i < maxIndex; i++) {
             allDaysDataFetch.push(fetchDatafromUrl(dates[i]));
         }
@@ -35,7 +35,12 @@ export async function getCurencyDataByMonthApiService(dates) {
     }
 }
 
-async function storeDataInToDB(data) {
-    await storeDataDbService(data);
+export async function getCurencyDataByDayApiService(date) {
+    try{ 
+        return await fetchDatafromUrl(date);
+    } catch {
+        errorLog('apiService / getCurencyDataByDayApiService', err);
+        throw err;  
+    }
 }
 

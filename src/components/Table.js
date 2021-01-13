@@ -19,7 +19,7 @@ export const Table = ({ headers, data, onHeadersSelected, onRowSelected, sortabl
 
     useEffect(() => {
 
-        if (data !== undefined && data !== null && headers !== undefined && headers !== null) {
+        if (data.length > 0 && headers.length > 0) {
 
             const headersCount = headers.length;
             const dataCount = data.length;
@@ -41,18 +41,21 @@ export const Table = ({ headers, data, onHeadersSelected, onRowSelected, sortabl
             }
 
             setDataToShow([...tempTable]);
+        } else {
+            setDataToShow([]);
         }
 
     }, [data]);
 
     const onSelectedColumn = (column) => {
+
         const array = [...sortDesc];
         array[column] = !array[column];
 
-        console.log('column', array)
         setCurrentColumnSelected(column);
 
         setSortDesc([...array]);
+
     }
 
     const renderItem = ({ item, index }) => {
@@ -76,9 +79,9 @@ export const Table = ({ headers, data, onHeadersSelected, onRowSelected, sortabl
             }
         } else {   
   
-            return (<View style={[styles.dataItemStyle, { borderRightWidth: curentColumn < columns ? 0 : 1, flex: curentColumn === 0 ? 2 : 1 }]}>
+            return (<View style={[styles.dataItemStyle, { borderRightWidth: curentColumn + 1 === columns ? 1 : 0, flex: curentColumn === 0 ? 2 : 1 }]}>
                 <TouchableOpacity onPress={() => {onRowSelected ? onRowSelected((Math.floor(index / columns) - 1)) : null}}>
-                    <Text style={theme.whiteBoldText}>{item.value}</Text>
+                    <Text style={theme.whiteBoldText}>{curentColumn === 0 ? item.value : item.value.toFixed(2)}</Text>
                 </TouchableOpacity>
             </View>)
         }
@@ -118,15 +121,15 @@ const styles = StyleSheet.create({
         margin: 0,
         padding: 5,
         borderWidth: 1,
-        borderColor: colors.blueColor,
-        backgroundColor: colors.blueColor,
+        borderColor: colors.greenColor,
+        backgroundColor: colors.greenColor,
     },
     dataItemStyle: {
         margin: 0,
         padding: 5,
         borderWidth: 1,
         borderTopWidth: 0,
-        borderColor: colors.blueColor
+        borderColor: colors.greenColor
     },
     emptyDataListContainer: {
         margin: 20

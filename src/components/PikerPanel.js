@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'flex-start',
         borderWidth: 1,
-        borderColor: colors.blueColor,
+        borderColor: colors.greenColor,
         borderRadius: 5,
         padding: 5,
         backgroundColor: colors.modalBackgroundColor
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 1,
-        borderColor: colors.blueColor,
+        borderColor: colors.greenColor,
         borderRadius: 5,
         padding: 5,
         backgroundColor: colors.modalBackgroundColor
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 2,
         borderBottomRightRadius: 2,
         width: 40,
-        backgroundColor: colors.blueColor,
+        backgroundColor: colors.greenColor,
     },
     selectorArrowContainer: {
         width: 30,

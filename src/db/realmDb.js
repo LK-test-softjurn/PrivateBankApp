@@ -23,7 +23,6 @@ export function storeDataRealmDb(day, month, year, data) {
         const maxIndex = data?.length;
         
         for(let i = 0; i < maxIndex; i++) {
-            console.log(`STORE ${date}`, data[i]);
             realm.write(() => {  
                 let currency = realm.create(CurrencySchemaName, {
                     currency: data[i]?.currency,
@@ -76,6 +75,7 @@ export function getCurrenciesAveragesMonthDataRealmDb(month, year) {
 
 export function getCurrencyMonthDataRealmDb(currency, month, year, sortByField, asc) {
     openRealm();
+
     let sortedRate = [];
     const realData = realm.objects(CurrencySchemaName).filtered('currency == $0 AND month == $1 AND year == $2', currency, month, year);
 
@@ -92,8 +92,6 @@ export function getCurrencyMonthDataRealmDb(currency, month, year, sortByField, 
     const data = JSON.parse(JSON.stringify(sortedRate.map(item => {
         return { date: item['date'].toLocaleDateString(), purchaseRate: roundFloat(item['purchaseRate']), saleRate: roundFloat(item['saleRate'])}})));
 
-    // const saleRate = JSON.parse(JSON.stringify(realm.objects(CurrencySchemaName).filtered('currency == $0 AND month == $1 AND year == $2', currency, month, year).map(item => {
-    //     return { date: item['date'].toLocaleDateString(), purchaseRate: roundFloat(item['purchaseRate']), saleRate: roundFloat(item['saleRate'])}})));
     closeRealm();
     return data;
 }

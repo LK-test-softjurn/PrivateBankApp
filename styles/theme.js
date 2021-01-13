@@ -45,6 +45,11 @@ export const theme = StyleSheet.create({
         fontSize: 14,
         color: colors.redColor
     },
+    greenBoldText: {
+        fontFamily: 'Roboto-bold',
+        fontSize: 14,
+        color: colors.greenColor
+    },
     buttonBlue: {
         alignSelf: 'stretch',
         padding: 10,
@@ -64,7 +69,12 @@ export const theme = StyleSheet.create({
     screanTitle: {
         fontFamily: 'Roboto-bold',
         fontSize: 24,
-        color: colors.whiteColor
+        color: colors.greenColor
+    },
+    pickerSelectedText: {
+        fontFamily: 'Roboto-bold',
+        fontSize: 20,
+        color: colors.greenColor
     }
 })
 
